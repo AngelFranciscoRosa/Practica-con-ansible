@@ -1,0 +1,35 @@
+---
+- name: Automatizacion e instalacion de aplicaciones en servidores Ubuntu
+  hosts: servidores
+  become: true # Ejecutar las tareas con privilegios sudo
+
+  tasks:
+    - name: Actualizar la cache de paquetes APT
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Crear el usuario 'itla' en cada servidor
+      user:
+        name: itla
+        state: present
+        shell: /bin/bash
+
+    - name: Crear la carpeta 'app'
+      file:
+        path: /app
+        state: directory
+        mode: '0755'
+
+    - name: Crear el archivo 'hola.txt' dentro de la carpeta 'app'
+      file:
+        path: /app/hola.txt
+        state: touch
+        mode: '0644'
+
+    - name: Instalar las aplicaciones 'cowsay' y 'htop'
+      apt:
+        name:
+          - cowsay
+          - htop
+        state: present
